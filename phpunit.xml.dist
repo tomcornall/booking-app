@@ -4,5 +4,11 @@
         <testsuite name="ZendSkeletonApplication Test Suite">
             <directory>./module/Application/test</directory>
         </testsuite>
+        <testsuite name="Booking">
+            <directory>./module/Booking/test</directory>
+        </testsuite>
+        <testsuite name="BookingRest">
+            <directory>./module/BookingRest/test</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
