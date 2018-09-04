@@ -2,6 +2,8 @@
 namespace BookingRestTest\Controller;
 
 use Booking\Model\Booking;
+use Booking\Model\BookingTable;
+use Zend\ServiceManager\ServiceManager;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
@@ -9,128 +11,127 @@ class BookingRestControllerTest extends AbstractHttpControllerTestCase
 {
     protected $traceError = true;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $bookingTableMock;
+    protected $bookingTable;
 
     protected function setUp() {
         $this->setApplicationConfig(
             include __DIR__ . '/../../../../../config/application.config.php'
         );
 
-        $this->bookingTableMock = $this->getBookingTableMock();
-        $this->useBookingTableMock($this->bookingTableMock);
+        $this->configureServiceManager($this->getApplicationServiceLocator());
+    }
+
+    protected function configureServiceManager(ServiceManager $services)
+    {
+        $services->setAllowOverride(true);
+
+        $services->setService('config', $this->updateConfig($services->get('config')));
+        $services->setService(BookingTable::class, $this->mockBookingTable()->reveal());
+
+        $services->setAllowOverride(false);
+    }
+
+    protected function updateConfig($config)
+    {
+        $config['db'] = [];
+        return $config;
+    }
+
+    protected function mockBookingTable()
+    {
+        $this->bookingTable = $this->prophesize(BookingTable::class);
+        return $this->bookingTable;
     }
 
     public function testGetListCanBeAccessed() {
-        $this->bookingTableMock
-            ->expects($this->once())
-            ->method('fetchAll')
-            ->will($this->returnValue(array()));
+        $this->bookingTable
+            ->fetchAll()
+            ->willReturn(['test']);
 
-        $this->dispatch('/booking-rest', 'GET', array(), true);
+        $this->dispatch('/api/booking', 'GET', [], true);
 
         $this->assertResponseStatusCode(200);
         $this->assertIsBookingRestController();
     }
 
     public function testGetCanBeAccessed() {
-        $this->bookingTableMock->expects($this->once())
-            ->method('getBooking')
-            ->will($this->returnValue(array()));
+        $this->bookingTable
+            ->getBooking(1)
+            ->willReturn(new Booking());
 
-        $this->dispatch('/booking-rest', 'GET', array(
+        $this->dispatch('/api/booking', 'GET', [
             'id' => 1
-        ), true);
+        ], true);
 
         $this->assertResponseStatusCode(200);
         $this->assertIsBookingRestController();
     }
 
     public function testCreateCanBeAccessed() {
-        $data = array(
-            'artist' => 'foo',
-            'title' => 'bar'
-        );
+        $data = [
+            'username' => 'Johnson',
+            'reason' => 'Back pain',
+            'start_date' => 'test',
+            'end_date' => 'test',
+        ];
 
-        $this->bookingTableMock
-            ->expects($this->once())
-            ->method('saveBooking')
-            ->with($this->withBookingData($data))
-            ->will($this->returnValue(123));
+        $this->bookingTable
+            ->saveBooking($data)
+            ->willReturn('test');
 
-        $this->dispatch('/booking-rest', 'POST', $data, true);
+        $this->dispatch('/api/booking', 'POST', $data, true);
 
         $this->assertResponseStatusCode(200);
         $this->assertIsBookingRestController();
     }
 
     public function testUpdateCanBeAccessed() {
-        $data_orig = array(
-            'artist' => 'foo',
-            'title' => 'bar'
-        );
+        $data_orig = [
+            'username' => 'foo',
+            'reason' => 'bar',
+            'start_date' => '2020-02-02T00:00',
+            'end_date' => '2020-02-02T02:00',
+        ];
 
-        $updateData = array(
-            'title' => 'shazaam'
-        );
+        $updateData = [
+            'reason' => 'shazaam',
+            'start_date' => '2020-02-02T00:00',
+            'end_date' => '2020-02-02T02:00',
+        ];
 
-        // Mock BookingTable::getBooking
-        $this->bookingTableMock
-            ->expects($this->once())
-            ->method('getBooking')
-            ->will($this->returnValue($data_orig));
+        $this->bookingTable
+            ->getBooking(1)
+            ->willReturn(new Booking());
 
-        // Mock BookingTable::saveBooking
-        $this->bookingTableMock
-            ->expects($this->once())
-            ->method('saveBooking')
-            ->with($this->withBookingData(array(
-                'artist' => 'foo',
-                'title' => 'shazaam'
-            )))
-            ->will($this->returnValue(123));
+        $this->bookingTable
+            ->saveBooking([
+                'id' => 1,
+                'username' => 'foo',
+                'reason' => 'shazaam',
+                'start_date' => '2020-02-02T00:00',
+                'end_date' => '2020-02-02T02:00'
+            ])
+            ->willReturn('test');
 
-        $this->dispatch('/booking-rest/1', 'PUT', $updateData, true);
+        $this->dispatch('/api/booking/1', 'PUT', $updateData, true);
 
         $this->assertResponseStatusCode(200);
         $this->assertIsBookingRestController();
     }
 
     public function testDeleteCanBeAccessed() {
-        $this->bookingTableMock
-            ->expects($this->once())
-            ->method('deleteBooking')
-            ->with(123);
+        $this->bookingTable
+            ->deleteBooking(1)
+            ->willReturn('test');
 
-        $this->dispatch('/booking-rest/123', 'DELETE', null, true);
+        $this->dispatch('/api/booking/1', 'DELETE', null, true);
 
         $this->assertResponseStatusCode(200);
         $this->assertIsBookingRestController();
     }
 
-    /*
-     * HELPER METHODS
-     */
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getBookingTableMock() {
-        return $this->getMockBuilder('Booking\Model\BookingTable')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    protected function useBookingTableMock(\PHPUnit_Framework_MockObject_MockObject $bookingTableMock) {
-        $this->getApplicationServiceLocator()
-            ->setAllowOverride(true)
-            ->setService('Booking\Model\BookingTable', $bookingTableMock);
-    }
-
     protected function assertIsBookingRestController() {
-        $this->assertControllerName('BookingRest\Controller\BookingRest');
+        $this->assertControllerName('BookingRest\Controller\BookingRestController');
         $this->assertControllerClass('BookingRestController');
         $this->assertMatchedRouteName('booking-rest');
     }
@@ -138,10 +139,10 @@ class BookingRestControllerTest extends AbstractHttpControllerTestCase
     protected function withBookingData($data) {
         return $this->callback(function ($obj) use ($data) {
             return $obj instanceof Booking &&
-            $obj->artist === $data['artist'] &&
-            $obj->title === $data['title'];
+                $obj->username === $data['username'] &&
+                $obj->reason === $data['reason'] &&
+                $obj->start_date === $data['start_date'] &&
+                $obj->end_date === $data['end_date'];
         });
-
     }
-
 }
