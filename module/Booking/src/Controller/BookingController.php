@@ -25,6 +25,7 @@ class BookingController extends AbstractActionController
         return new ViewModel([
             'bookings' => $this->table->fetchAll(),
         ]);
+
     }
 
     /**
@@ -37,7 +38,7 @@ class BookingController extends AbstractActionController
 
         $request = $this->getRequest();
 
-        if (! $request->isPost()) {
+        if (!$request->isPost()) {
             return ['form' => $form];
         }
 
@@ -46,7 +47,7 @@ class BookingController extends AbstractActionController
         $form->setInputFilter($booking->getInputFilter());
         $form->setData($request->getPost());
 
-        if (! $form->isValid()) {
+        if (!$form->isValid()) {
             return ['form' => $form];
         }
 
@@ -60,21 +61,21 @@ class BookingController extends AbstractActionController
      */
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = $this->params()->fromRoute('id', 0);
 
-        if (0 === $id) {
+        if ($id === 0) {
             return $this->redirect()->toRoute('booking', ['action' => 'add']);
         }
 
-        // Retrieve the booking with the specified id. Doing so raises
-        // an exception if the booking is not found, which should result
-        // in redirecting to the landing page.
+        // Try getting the Booking by ID
         try {
             $booking = $this->table->getBooking($id);
         } catch (\Exception $e) {
+            // Booking not found, redirect to the index page
             return $this->redirect()->toRoute('booking', ['action' => 'index']);
         }
 
+        // Create the form
         $form = new BookingForm();
         $form->bind($booking);
         $form->get('submit')->setAttribute('value', 'Edit');
@@ -82,14 +83,14 @@ class BookingController extends AbstractActionController
         $request = $this->getRequest();
         $viewData = ['id' => $id, 'form' => $form];
 
-        if (! $request->isPost()) {
+        if (!$request->isPost()) {
             return $viewData;
         }
 
         $form->setInputFilter($booking->getInputFilter());
         $form->setData($request->getPost());
 
-        if (! $form->isValid()) {
+        if (!$form->isValid()) {
             return $viewData;
         }
 
