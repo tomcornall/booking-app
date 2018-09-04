@@ -1,223 +1,194 @@
-# ZendSkeletonApplication
+# Doctor Booking App
 
 ## Introduction
 
-This is a skeleton application using the Zend Framework MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with Zend Framework.
+This simple application uses the Zend 2 Framework MVC layer and module
+systems. The application has 2 modules:
+- Booking
+- BookingRest (REST API)
 
-## Installation using Composer
+To view an easy to read diff between the default Zend skeleton application and my work, click [here](https://github.com/tomcornall/booking-app/compare/a8a68f...master).
 
-The easiest way to create a new Zend Framework project is to use
-[Composer](https://getcomposer.org/).  If you don't have it already installed,
-then please install as per the [documentation](https://getcomposer.org/doc/00-intro.md).
+## Setup
 
-To create your new Zend Framework project:
+You need to use [Composer](https://getcomposer.org/) to install the project. You can run the following command:
 
-```bash
-$ composer create-project -sdev zendframework/skeleton-application path/to/install
+```
+$ composer install
 ```
 
-Once installed, you can test it out immediately using PHP's built-in web server:
+Once installed, we also recommend that you initially use development mode, which you can enable using:
 
-```bash
-$ cd path/to/install
-$ php -S 0.0.0.0:8080 -t public/ public/index.php
-# OR use the composer alias:
-$ composer run --timeout 0 serve
+```
+$ composer development-enable
 ```
 
-This will start the cli-server on port 8080, and bind it to all network
-interfaces. You can then visit the site at http://localhost:8080/
-- which will bring up Zend Framework welcome page.
+Field name	Type	Null?	Notes
+id	integer	No	Primary key, auto-increment
+username	varchar(80)	No	
+reason	varchar(255)	No	
+start_date	date	No	
+end_date	date	No	
 
-**Note:** The built-in CLI server is *for development only*.
 
-## Development mode
+## Database Setup
 
-The skeleton ships with [zf-development-mode](https://github.com/zfcampus/zf-development-mode)
-by default, and provides three aliases for consuming the script it ships with:
+The database used is [SQLite](https://www.sqlite.org/). The Schema is saved under the data directory and can be setup easily:
 
-```bash
-$ composer development-enable  # enable development mode
-$ composer development-disable # disable development mode
-$ composer development-status  # whether or not development mode is enabled
+```
+$ sqlite3 data/booking.db < data/schema.sql
+
+// Note you might need to use `sqlite` instead of the `sqlite3` version depending on your system
 ```
 
-You may provide development-only modules and bootstrap-level configuration in
-`config/development.config.php.dist`, and development-only application
-configuration in `config/autoload/development.local.php.dist`. Enabling
-development mode will copy these files to versions removing the `.dist` suffix,
-while disabling development mode will remove those copies.
+The Schema is as follows:
 
-Development mode is automatically enabled as part of the skeleton installation process. 
-After making changes to one of the above-mentioned `.dist` configuration files you will
-either need to disable then enable development mode for the changes to take effect,
-or manually make matching updates to the `.dist`-less copies of those files.
+| Field name |	Type |	Null? |	Notes |
+| ---------- | ----- | ------ | ----- |
+| id | integer | No | Primary key, auto-increment
+| username | varchar(80) | No | |
+| reason | varchar(255) | No | |
+| start_date | date | No | Format: `Y-m-d\TH:i` |
+| end_date | date | No | Format: `Y-m-d\TH:i` |
+
+
+## API Docs
+
+### GET /api/booking
+
+Gets a list of bookings.
+
+`http GET localhost:8080/api/booking`
+
+Response:
+
+```json
+{
+    "data": [
+        {
+            "id": "1",
+            "username": "John Johnson",
+            "reason": "Back pain",
+            "start_date": "2018-10-20T08:00",
+            "end_date": "2018-10-20T10:00"
+        },
+        {
+            "id": "2",
+            "username": "Jack Jimson",
+            "reason": "Teeth stuff",
+            "start_date": "2019-02-01T01:10",
+            "end_date": "2019-11-01T01:01"
+        }
+    ]
+}
+```
+
+### GET /api/booking/:id
+
+Gets a single booking, by ID.
+
+`http GET localhost:8080/api/booking/2`
+
+Response:
+
+```json
+{
+    "data": {
+        "id": "2",
+        "username": "Jack Jimson",
+        "reason": "Teeth stuff",
+        "start_date": "2019-02-01T01:10",
+        "end_date": "2019-11-01T01:01"
+    }
+}
+```
+
+### POST /api/booking
+
+Creates a booking.
+
+`http POST localhost:8080/api/booking`
+
+Request Body:
+
+```json
+{
+  "username": "Test Name<script></script>",
+  "reason": "Itchy",
+  "start_date": "2018-10-20T08:00",
+  "end_date": "2018-10-20T10:00"
+}
+```
+
+Response:
+
+```json
+{
+    "data": {
+        "id": "2",
+        "username": "Test Name",
+        "reason": "itchy raATE11",
+        "start_date": "2018-10-20T08:00",
+        "end_date": "2018-10-20T10:00"
+    }
+}
+```
+
+*Note the filtered out tag.
+
+### PUT /api/booking/:id
+
+Updates a booking.
+
+`http PUT localhost:8080/api/booking/2`
+
+Request Body:
+
+```json
+{
+  "username": "Test Name",
+  "reason": "Itchy",
+  "start_date": "2018-10-20T08:00",
+  "end_date": "2018-10-20T10:00"
+}
+```
+
+Response:
+```json
+{
+    "data": {
+        "id": "2",
+        "username": "Test Name",
+        "reason": "Itchy",
+        "start_date": "2018-10-20T08:00",
+        "end_date": "2018-10-20T10:00"
+    }
+}
+```
+
+### DELETE /api/booking/:id
+
+Deletes a booking.
+
+`http DELETE localhost:8080/api/booking/2`
+
+Response:
+```json
+{
+    "data": "deleted"
+}
+```
 
 ## Running Unit Tests
 
-To run the supplied skeleton unit tests, you need to do one of the following:
-
-- During initial project creation, select to install the MVC testing support.
-- After initial project creation, install [zend-test](https://zendframework.github.io/zend-test/):
-
-  ```bash
-  $ composer require --dev zendframework/zend-test
-  ```
-
-Once testing support is present, you can run the tests using:
+To run the unit tests, use phpunit:
 
 ```bash
 $ ./vendor/bin/phpunit
 ```
 
-If you need to make local modifications for the PHPUnit test setup, copy
-`phpunit.xml.dist` to `phpunit.xml` and edit the new file; the latter has
-precedence over the former when running tests, and is ignored by version
-control. (If you want to make the modifications permanent, edit the
-`phpunit.xml.dist` file.)
+And filter out specific tests:
 
-## Using Vagrant
-
-This skeleton includes a `Vagrantfile` based on ubuntu 16.04 (bento box)
-with configured Apache2 and PHP 7.0. Start it up using:
-
-```bash
-$ vagrant up
 ```
-
-Once built, you can also run composer within the box. For example, the following
-will install dependencies:
-
-```bash
-$ vagrant ssh -c 'composer install'
-```
-
-While this will update them:
-
-```bash
-$ vagrant ssh -c 'composer update'
-```
-
-While running, Vagrant maps your host port 8080 to port 80 on the virtual
-machine; you can visit the site at http://localhost:8080/
-
-> ### Vagrant and VirtualBox
->
-> The vagrant image is based on ubuntu/xenial64. If you are using VirtualBox as
-> a provider, you will need:
->
-> - Vagrant 1.8.5 or later
-> - VirtualBox 5.0.26 or later
-
-For vagrant documentation, please refer to [vagrantup.com](https://www.vagrantup.com/)
-
-## Using docker-compose
-
-This skeleton provides a `docker-compose.yml` for use with
-[docker-compose](https://docs.docker.com/compose/); it
-uses the `Dockerfile` provided as its base. Build and start the image using:
-
-```bash
-$ docker-compose up -d --build
-```
-
-At this point, you can visit http://localhost:8080 to see the site running.
-
-You can also run composer from the image. The container environment is named
-"zf", so you will pass that value to `docker-compose run`:
-
-```bash
-$ docker-compose run zf composer install
-```
-
-## Web server setup
-
-### Apache setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the
-project and you should be ready to go! It should look something like below:
-
-```apache
-<VirtualHost *:80>
-    ServerName zfapp.localhost
-    DocumentRoot /path/to/zfapp/public
-    <Directory /path/to/zfapp/public>
-        DirectoryIndex index.php
-        AllowOverride All
-        Order allow,deny
-        Allow from all
-        <IfModule mod_authz_core.c>
-        Require all granted
-        </IfModule>
-    </Directory>
-</VirtualHost>
-```
-
-### Nginx setup
-
-To setup nginx, open your `/path/to/nginx/nginx.conf` and add an
-[include directive](http://nginx.org/en/docs/ngx_core_module.html#include) below
-into `http` block if it does not already exist:
-
-```nginx
-http {
-    # ...
-    include sites-enabled/*.conf;
-}
-```
-
-
-Create a virtual host configuration file for your project under `/path/to/nginx/sites-enabled/zfapp.localhost.conf`
-it should look something like below:
-
-```nginx
-server {
-    listen       80;
-    server_name  zfapp.localhost;
-    root         /path/to/zfapp/public;
-
-    location / {
-        index index.php;
-        try_files $uri $uri/ @php;
-    }
-
-    location @php {
-        # Pass the PHP requests to FastCGI server (php-fpm) on 127.0.0.1:9000
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_param  SCRIPT_FILENAME /path/to/zfapp/public/index.php;
-        include fastcgi_params;
-    }
-}
-```
-
-Restart the nginx, now you should be ready to go!
-
-## QA Tools
-
-The skeleton does not come with any QA tooling by default, but does ship with
-configuration for each of:
-
-- [phpcs](https://github.com/squizlabs/php_codesniffer)
-- [phpunit](https://phpunit.de)
-
-Additionally, it comes with some basic tests for the shipped
-`Application\Controller\IndexController`.
-
-If you want to add these QA tools, execute the following:
-
-```bash
-$ composer require --dev phpunit/phpunit squizlabs/php_codesniffer zendframework/zend-test
-```
-
-We provide aliases for each of these tools in the Composer configuration:
-
-```bash
-# Run CS checks:
-$ composer cs-check
-# Fix CS errors:
-$ composer cs-fix
-# Run PHPUnit tests:
-$ composer test
+$ ./vendor/bin/phpunit --testsuite BookingRest
 ```
