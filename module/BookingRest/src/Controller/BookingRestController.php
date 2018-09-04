@@ -48,6 +48,9 @@ class BookingRestController extends AbstractRestfulController
             ]);
         }
 
+        // Populate using filtered values
+        $data = $inputFilter->getValues();
+
         $booking->exchangeArray($data);
         $id = $this->table->saveBooking($booking);
 
@@ -70,6 +73,9 @@ class BookingRestController extends AbstractRestfulController
                 'data' => $inputFilter->getMessages()
             ]);
         }
+
+        // Populate using filtered values
+        $data = $inputFilter->getValues();
 
         $booking->exchangeArray($data);
         $id = $this->table->saveBooking($booking);
