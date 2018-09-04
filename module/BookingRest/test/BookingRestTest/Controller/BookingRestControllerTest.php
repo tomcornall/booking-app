@@ -1,48 +1,51 @@
 <?php
-namespace AlbumRestTest\Controller;
+namespace BookingRestTest\Controller;
 
-use Album\Model\Album;
+use Booking\Model\Booking;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
-class AlbumRestControllerTest extends AbstractHttpControllerTestCase {
+class BookingRestControllerTest extends AbstractHttpControllerTestCase
+{
+    protected $traceError = true;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $albumTableMock;
+    protected $bookingTableMock;
 
     protected function setUp() {
         $this->setApplicationConfig(
             include __DIR__ . '/../../../../../config/application.config.php'
         );
 
-        $this->albumTableMock = $this->getAlbumTableMock();
-        $this->useAlbumTableMock($this->albumTableMock);
+        $this->bookingTableMock = $this->getBookingTableMock();
+        $this->useBookingTableMock($this->bookingTableMock);
     }
 
     public function testGetListCanBeAccessed() {
-        $this->albumTableMock
+        $this->bookingTableMock
             ->expects($this->once())
             ->method('fetchAll')
             ->will($this->returnValue(array()));
 
-        $this->dispatch('/album-rest', 'GET', array(), true);
+        $this->dispatch('/booking-rest', 'GET', array(), true);
 
         $this->assertResponseStatusCode(200);
-        $this->assertIsAlbumRestController();
+        $this->assertIsBookingRestController();
     }
 
     public function testGetCanBeAccessed() {
-        $this->albumTableMock->expects($this->once())
-            ->method('getAlbum')
+        $this->bookingTableMock->expects($this->once())
+            ->method('getBooking')
             ->will($this->returnValue(array()));
 
-        $this->dispatch('/album-rest', 'GET', array(
+        $this->dispatch('/booking-rest', 'GET', array(
             'id' => 1
         ), true);
 
         $this->assertResponseStatusCode(200);
-        $this->assertIsAlbumRestController();
+        $this->assertIsBookingRestController();
     }
 
     public function testCreateCanBeAccessed() {
@@ -51,16 +54,16 @@ class AlbumRestControllerTest extends AbstractHttpControllerTestCase {
             'title' => 'bar'
         );
 
-        $this->albumTableMock
+        $this->bookingTableMock
             ->expects($this->once())
-            ->method('saveAlbum')
-            ->with($this->withAlbumData($data))
+            ->method('saveBooking')
+            ->with($this->withBookingData($data))
             ->will($this->returnValue(123));
 
-        $this->dispatch('/album-rest', 'POST', $data, true);
+        $this->dispatch('/booking-rest', 'POST', $data, true);
 
         $this->assertResponseStatusCode(200);
-        $this->assertIsAlbumRestController();
+        $this->assertIsBookingRestController();
     }
 
     public function testUpdateCanBeAccessed() {
@@ -73,38 +76,38 @@ class AlbumRestControllerTest extends AbstractHttpControllerTestCase {
             'title' => 'shazaam'
         );
 
-        // Mock AlbumTable::getAlbum
-        $this->albumTableMock
+        // Mock BookingTable::getBooking
+        $this->bookingTableMock
             ->expects($this->once())
-            ->method('getAlbum')
+            ->method('getBooking')
             ->will($this->returnValue($data_orig));
 
-        // Mock AlbumTable::saveAlbum
-        $this->albumTableMock
+        // Mock BookingTable::saveBooking
+        $this->bookingTableMock
             ->expects($this->once())
-            ->method('saveAlbum')
-            ->with($this->withAlbumData(array(
+            ->method('saveBooking')
+            ->with($this->withBookingData(array(
                 'artist' => 'foo',
                 'title' => 'shazaam'
             )))
             ->will($this->returnValue(123));
 
-        $this->dispatch('/album-rest/1', 'PUT', $updateData, true);
+        $this->dispatch('/booking-rest/1', 'PUT', $updateData, true);
 
         $this->assertResponseStatusCode(200);
-        $this->assertIsAlbumRestController();
+        $this->assertIsBookingRestController();
     }
 
     public function testDeleteCanBeAccessed() {
-        $this->albumTableMock
+        $this->bookingTableMock
             ->expects($this->once())
-            ->method('deleteAlbum')
+            ->method('deleteBooking')
             ->with(123);
 
-        $this->dispatch('/album-rest/123', 'DELETE', null, true);
+        $this->dispatch('/booking-rest/123', 'DELETE', null, true);
 
         $this->assertResponseStatusCode(200);
-        $this->assertIsAlbumRestController();
+        $this->assertIsBookingRestController();
     }
 
     /*
@@ -114,27 +117,27 @@ class AlbumRestControllerTest extends AbstractHttpControllerTestCase {
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getAlbumTableMock() {
-        return $this->getMockBuilder('Album\Model\AlbumTable')
+    protected function getBookingTableMock() {
+        return $this->getMockBuilder('Booking\Model\BookingTable')
             ->disableOriginalConstructor()
             ->getMock();
     }
 
-    protected function useAlbumTableMock(\PHPUnit_Framework_MockObject_MockObject $albumTableMock) {
+    protected function useBookingTableMock(\PHPUnit_Framework_MockObject_MockObject $bookingTableMock) {
         $this->getApplicationServiceLocator()
             ->setAllowOverride(true)
-            ->setService('Album\Model\AlbumTable', $albumTableMock);
+            ->setService('Booking\Model\BookingTable', $bookingTableMock);
     }
 
-    protected function assertIsAlbumRestController() {
-        $this->assertControllerName('AlbumRest\Controller\AlbumRest');
-        $this->assertControllerClass('AlbumRestController');
-        $this->assertMatchedRouteName('album-rest');
+    protected function assertIsBookingRestController() {
+        $this->assertControllerName('BookingRest\Controller\BookingRest');
+        $this->assertControllerClass('BookingRestController');
+        $this->assertMatchedRouteName('booking-rest');
     }
 
-    protected function withAlbumData($data) {
+    protected function withBookingData($data) {
         return $this->callback(function ($obj) use ($data) {
-            return $obj instanceof Album &&
+            return $obj instanceof Booking &&
             $obj->artist === $data['artist'] &&
             $obj->title === $data['title'];
         });
