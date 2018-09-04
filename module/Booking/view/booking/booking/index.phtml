@@ -1,0 +1,31 @@
+<?php
+$title = 'My bookings';
+$this->headTitle($title);
+?>
+
+<h1><?= $this->escapeHtml($title) ?></h1>
+<p>
+    <a href="<?= $this->url('booking', ['action' => 'add']) ?>">Add new booking</a>
+</p>
+
+<table class="table">
+<tr>
+    <th>Name</th>
+    <th>Reason</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach ($bookings as $booking) : ?>
+    <tr>
+        <td><?= $this->escapeHtml($booking->username) ?></td>
+        <td><?= $this->escapeHtml($booking->reason) ?></td>
+        <td><?= $this->escapeHtml($booking->start_date) ?></td>
+        <td><?= $this->escapeHtml($booking->end_date) ?></td>
+        <td>
+            <a href="<?= $this->url('booking', ['action' => 'edit', 'id' => $booking->id]) ?>">Edit</a>
+            <a href="<?= $this->url('booking', ['action' => 'delete', 'id' => $booking->id]) ?>">Delete</a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

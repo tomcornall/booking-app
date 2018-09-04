@@ -1,0 +1,60 @@
+<?php
+$title = 'Add new booking';
+$this->headTitle($title);
+?>
+
+<h1><?= $this->escapeHtml($title) ?></h1>
+
+<?php
+$username = $form->get('username');
+$username->setAttribute('class', 'form-control');
+$username->setAttribute('placeholder', 'John Smith');
+
+$reason = $form->get('reason');
+$reason->setAttribute('class', 'form-control');
+$reason->setAttribute('placeholder', 'Back pain');
+
+$startDate = $form->get('start_date');
+$startDate->setAttribute('class', 'form-control');
+
+$endDate = $form->get('end_date');
+$endDate->setAttribute('class', 'form-control');
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$form->setAttribute('action', $this->url('booking', ['action' => 'add']));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+
+<div class="form-group">
+    <?= $this->formLabel($username) ?>
+    <?= $this->formElement($username) ?>
+    <?= $this->formElementErrors()->render($username, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?= $this->formLabel($reason) ?>
+    <?= $this->formElement($reason) ?>
+    <?= $this->formElementErrors()->render($reason, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?= $this->formLabel($startDate) ?>
+    <?= $this->formElement($startDate) ?>
+    <?= $this->formElementErrors()->render($startDate, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?= $this->formLabel($endDate) ?>
+    <?= $this->formElement($endDate) ?>
+    <?= $this->formElementErrors()->render($endDate, ['class' => 'help-block']) ?>
+</div>
+
+<?php
+echo $this->formSubmit($submit);
+echo $this->formHidden($form->get('id'));
+echo $this->form()->closeTag();
+?>
