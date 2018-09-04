@@ -19,6 +19,7 @@ class Module implements ConfigProviderInterface
         return [
             'factories' => [
                 Model\BookingTable::class => function($container) {
+                    // Construct the BookingTable with a table gateway object
                     $tableGateway = $container->get(Model\BookingTableGateway::class);
                     return new Model\BookingTable($tableGateway);
                 },

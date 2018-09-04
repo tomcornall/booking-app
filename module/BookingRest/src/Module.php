@@ -19,6 +19,8 @@ class Module implements ConfigProviderInterface
         return [
             'factories' => [
                 Controller\BookingRestController::class => function($container) {
+                    // Load the Controller with the BookingTable object to
+                    // for access to the bookings
                     return new Controller\BookingRestController(
                         $container->get(\Booking\Model\BookingTable::class)
                     );

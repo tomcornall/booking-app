@@ -46,6 +46,8 @@ class Booking implements InputFilterAwareInterface
 
     /**
      * Array copy method
+     *
+     * @return array Booking object attributes
      */
     public function getArrayCopy()
     {
@@ -59,18 +61,23 @@ class Booking implements InputFilterAwareInterface
     }
 
     /**
-     * Set Input Filter
+     * Sets Input Filter
      *   - Inherited from the InputFilter interface
-     *   - We don't need to allow injection of alternate filters so we throw an exception.
+     *   - We don't need to allow injection of alternate filters so we throw an exception
      *
      * @param  InputFilterInterface $inputFilter
-     * @return Exception
+     * @return DomainException
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new DomainException("Booking Model does not allow injection of an alternate input filter");
     }
 
+    /**
+     * Gets the InputFilter for use in validation
+     *
+     * @return Zend\InputFilter\InputFilter
+     */
     public function getInputFilter()
     {
         if ($this->inputFilter) {

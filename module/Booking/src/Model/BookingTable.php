@@ -17,7 +17,7 @@ class BookingTable
     /**
      * Get a collection of bookings
      *
-     * @return Zend\Db\Sql\Select
+     * @return Zend\Db\ResultSet\ResultSet Object
      */
     public function fetchAll()
     {
@@ -28,15 +28,15 @@ class BookingTable
      * Get a booking by ID
      *
      * @param int $id
-     * @return
+     * @return Booking\Model\Booking Object
      */
     public function getBooking($id)
     {
-        $id = (int) $id;
         $rowset = $this->tableGateway->select(['id' => $id]);
         $row = $rowset->current();
-        if (! $row) {
-            throw new RuntimeException("Could not find row with identifier $id");
+
+        if (!$row) {
+            throw new RuntimeException("Could not find booking with ID $id");
         }
 
         return $row;
@@ -45,7 +45,8 @@ class BookingTable
     /**
      * Create or update a booking
      *
-     * @param Booking\Model\Booking
+     * @param Booking\Model\Booking Object
+     * @return int $id - ID of Booking object
      */
     public function saveBooking(Booking $booking)
     {
@@ -60,7 +61,8 @@ class BookingTable
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
-            return;
+            $test = $this->tableGateway->lastInsertValue;
+            return $this->tableGateway->lastInsertValue;
         }
 
         if (! $this->getBooking($id)) {
@@ -68,15 +70,19 @@ class BookingTable
         }
 
         $this->tableGateway->update($data, ['id' => $id]);
+        return $id;
     }
 
     /**
      * Delete a booking by ID
      *
      * @param int $id
+     * @return bool - True for valid ID found/deleted
      */
     public function deleteBooking($id)
     {
-        $this->tableGateway->delete(['id' => (int) $id]);
+        $affected = $this->tableGateway->delete(['id' => (int) $id]);
+        file_put_contents("affectted.txt", print_r($affected, true));
+        return $affected > 0 ? true : false;
     }
 }
