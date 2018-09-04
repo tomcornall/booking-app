@@ -10,6 +10,7 @@ namespace Application;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use Booking\Controller\BookingController;
 
 return [
     'router' => [
@@ -19,7 +20,7 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => BookingController::class,
                         'action'     => 'index',
                     ],
                 ],
