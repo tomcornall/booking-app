@@ -23,12 +23,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/"
+            "Application\\": "module/Application/src/",
+            "Booking\\": "module/Booking/src/",
+            "BookingRest\\": "module/BookingRest/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
+            "ApplicationTest\\": "module/Application/test/",
+            "BookingTest\\": "module/Booking/test/",
+            "BookingRestTest\\": "module/BookingRest/test/"
         }
     },
     "extra": [],
