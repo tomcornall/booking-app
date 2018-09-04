@@ -14,6 +14,11 @@ use Zend\Validator\Date;
 class Booking implements InputFilterAwareInterface
 {
     /**
+     * Date format for bookings
+     */
+    const BOOKING_DATE_FORMAT = 'Y-m-d\TH:i';
+
+    /**
      * Booking attributes
      */
     public $id;
@@ -127,7 +132,7 @@ class Booking implements InputFilterAwareInterface
                 [
                     'name' => Date::class,
                     'options' => [
-                        'format' => 'Y-m-d\TH:i'
+                        'format' => self::BOOKING_DATE_FORMAT
                     ],
                 ],
             ],
@@ -140,7 +145,7 @@ class Booking implements InputFilterAwareInterface
                 [
                     'name' => Date::class,
                     'options' => [
-                        'format' => 'Y-m-d\TH:i'
+                        'format' => self::BOOKING_DATE_FORMAT
                     ],
                 ],
             ],

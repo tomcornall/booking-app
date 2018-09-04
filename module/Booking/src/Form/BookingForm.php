@@ -3,6 +3,7 @@ namespace Booking\Form;
 
 use Zend\Form\Form;
 use Zend\Form\Element;
+use Booking\Model\Booking;
 
 class BookingForm extends Form
 {
@@ -44,7 +45,7 @@ class BookingForm extends Form
             'type' => Element\DateTimeLocal::class,
             'options' => [
                 'label' => 'Start Date',
-                'format' => self::DATE_FORMAT,
+                'format' => Booking::BOOKING_DATE_FORMAT,
             ],
             'attributes' => [
                 'min' => self::getFormattedTimeNow(),
@@ -58,7 +59,7 @@ class BookingForm extends Form
             'type' => Element\DateTimeLocal::class,
             'options' => [
                 'label' => 'End Date',
-                'format' => self::DATE_FORMAT,
+                'format' => Booking::BOOKING_DATE_FORMAT,
             ],
             'attributes' => [
                 'min' => self::getFormattedTimeNow(),
@@ -84,7 +85,7 @@ class BookingForm extends Form
      */
     private static function getFormattedTimeNow()
     {
-        return date(self::DATE_FORMAT, time());
+        return date(Booking::BOOKING_DATE_FORMAT, time());
     }
 
     /**
@@ -94,6 +95,6 @@ class BookingForm extends Form
      */
     private static function getTimePlusFiveYears()
     {
-        return date(self::DATE_FORMAT, strtotime('+5 years'));
+        return date(Booking::BOOKING_DATE_FORMAT, strtotime('+5 years'));
     }
 }
