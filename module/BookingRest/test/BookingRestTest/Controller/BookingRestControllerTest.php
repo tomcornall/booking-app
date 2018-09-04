@@ -87,14 +87,14 @@ class BookingRestControllerTest extends AbstractHttpControllerTestCase
 
     public function testUpdateCanBeAccessed() {
         $data_orig = [
-            'username' => 'foo',
-            'reason' => 'bar',
+            'username' => 'Test Man',
+            'reason' => 'Shoulder twinge',
             'start_date' => '2020-02-02T00:00',
             'end_date' => '2020-02-02T02:00',
         ];
 
         $updateData = [
-            'reason' => 'shazaam',
+            'reason' => 'Back pain',
             'start_date' => '2020-02-02T00:00',
             'end_date' => '2020-02-02T02:00',
         ];
@@ -106,8 +106,8 @@ class BookingRestControllerTest extends AbstractHttpControllerTestCase
         $this->bookingTable
             ->saveBooking([
                 'id' => 1,
-                'username' => 'foo',
-                'reason' => 'shazaam',
+                'username' => 'Test Man',
+                'reason' => 'Back pain',
                 'start_date' => '2020-02-02T00:00',
                 'end_date' => '2020-02-02T02:00'
             ])

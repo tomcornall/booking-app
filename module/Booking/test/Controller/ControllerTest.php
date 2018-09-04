@@ -93,7 +93,7 @@ class BookingControllerTest extends AbstractHttpControllerTestCase
 
         $postData = [
             'username'  => 'Mr Anderson',
-            'reason' => 'Exploding body',
+            'reason' => 'Sick with the flu',
             'start_date' => '2020-02-02T00:00',
             'end_date' => '2020-02-02T02:00',
             'id'     => '',
@@ -110,7 +110,7 @@ class BookingControllerTest extends AbstractHttpControllerTestCase
 
         $postData = [
             'username'  => 'Mr Anderson',
-            'reason' => 'Exploding body',
+            'reason' => 'Sick with the flu',
             'start_date' => '2020-02-02T00:00',
             'end_date' => '2020-02-02T02:00'
         ];
