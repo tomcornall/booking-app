@@ -27,6 +27,9 @@ class Booking implements InputFilterAwareInterface
      */
     private $inputFilter;
 
+    /**
+     * Exchange Array for zend entity class
+     */
     public function exchangeArray(array $data)
     {
         $this->id     = !empty($data['id']) ? $data['id'] : null;
@@ -34,6 +37,20 @@ class Booking implements InputFilterAwareInterface
         $this->reason  = !empty($data['reason']) ? $data['reason'] : null;
         $this->start_date  = !empty($data['start_date']) ? $data['start_date'] : null;
         $this->end_date  = !empty($data['end_date']) ? $data['end_date'] : null;
+    }
+
+    /**
+     * Array copy method
+     */
+    public function getArrayCopy()
+    {
+        return [
+            'id'     => $this->id,
+            'username' => $this->username,
+            'reason'  => $this->reason,
+            'start_date'  => $this->start_date,
+            'end_date'  => $this->end_date,
+        ];
     }
 
     /**
@@ -106,11 +123,27 @@ class Booking implements InputFilterAwareInterface
         $inputFilter->add([
             'name' => 'start_date',
             'required' => true,
+            'validators' => [
+                [
+                    'name' => Date::class,
+                    'options' => [
+                        'format' => 'Y-m-d\TH:i:s'
+                    ],
+                ],
+            ],
         ]);
 
         $inputFilter->add([
             'name' => 'end_date',
             'required' => true,
+            'validators' => [
+                [
+                    'name' => Date::class,
+                    'options' => [
+                        'format' => 'Y-m-d\TH:i:s'
+                    ],
+                ],
+            ],
         ]);
 
         $this->inputFilter = $inputFilter;
