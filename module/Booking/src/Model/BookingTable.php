@@ -82,7 +82,6 @@ class BookingTable
     public function deleteBooking($id)
     {
         $affected = $this->tableGateway->delete(['id' => (int) $id]);
-        file_put_contents("affectted.txt", print_r($affected, true));
         return $affected > 0 ? true : false;
     }
 }
