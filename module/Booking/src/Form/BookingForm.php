@@ -7,7 +7,7 @@ use Zend\Form\Element;
 class BookingForm extends Form
 {
     // Date format used in the booking form
-    const DATE_FORMAT = 'Y-m-d\TH:i';
+    const DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     /**
      * Form constructor adds fields to the form
@@ -47,9 +47,9 @@ class BookingForm extends Form
                 'format' => self::DATE_FORMAT,
             ],
             'attributes' => [
-                'min' => date(self::DATE_FORMAT, time()),
-                'max' => '2020-01-00T00:00',
-                'step' => '1', // minutes
+                'min' => self::getFormattedTimeNow(),
+                'max' => self::getTimePlusFiveYears(),
+                'step' => 'any'
             ],
         ]);
 
@@ -61,9 +61,9 @@ class BookingForm extends Form
                 'format' => self::DATE_FORMAT,
             ],
             'attributes' => [
-                'min' => date(self::DATE_FORMAT, time()),
-                'max' => '2025-01-00T00:00',
-                'step' => '1', // minutes
+                'min' => self::getFormattedTimeNow(),
+                'max' => self::getTimePlusFiveYears(),
+                'step' => 'any'
             ],
         ]);
 
@@ -75,5 +75,25 @@ class BookingForm extends Form
                 'id'    => 'submitbutton',
             ],
         ]);
+    }
+
+    /**
+     * Get a formatted string date for now
+     *
+     * @return string
+     */
+    private static function getFormattedTimeNow()
+    {
+        return date(self::DATE_FORMAT, time());
+    }
+
+    /**
+     * Get a formatted string date for now
+     *
+     * @return string
+     */
+    private static function getTimePlusFiveYears()
+    {
+        return date(self::DATE_FORMAT, strtotime('+5 years'));
     }
 }
