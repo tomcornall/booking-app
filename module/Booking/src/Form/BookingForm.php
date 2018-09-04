@@ -7,9 +7,6 @@ use Booking\Model\Booking;
 
 class BookingForm extends Form
 {
-    // Date format used in the booking form
-    const DATE_FORMAT = 'Y-m-d\TH:i';
-
     /**
      * Form constructor adds fields to the form
      *
