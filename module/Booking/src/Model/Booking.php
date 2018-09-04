@@ -127,7 +127,7 @@ class Booking implements InputFilterAwareInterface
                 [
                     'name' => Date::class,
                     'options' => [
-                        'format' => 'Y-m-d\TH:i:s'
+                        'format' => 'Y-m-d\TH:i'
                     ],
                 ],
             ],
@@ -140,7 +140,7 @@ class Booking implements InputFilterAwareInterface
                 [
                     'name' => Date::class,
                     'options' => [
-                        'format' => 'Y-m-d\TH:i:s'
+                        'format' => 'Y-m-d\TH:i'
                     ],
                 ],
             ],
