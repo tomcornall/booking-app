@@ -7,8 +7,6 @@ systems. The application has 2 modules:
 - Booking
 - BookingRest (REST API)
 
-To view an easy to read diff between the default Zend skeleton application and my work, click [here](https://github.com/tomcornall/booking-app/compare/a8a68f...master).
-
 ## Setup
 
 You need to use [Composer](https://getcomposer.org/) to install the project. Run the following command from the project's root directory to install required packages:
