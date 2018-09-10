@@ -86,7 +86,7 @@ class BookingForm extends Form
     }
 
     /**
-     * Get a formatted string date for now
+     * Get a formatted string date for now + 5 years
      *
      * @return string
      */
