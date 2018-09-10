@@ -57,7 +57,7 @@ class BookingTable
             'end_date'  => $booking->end_date,
         ];
 
-        $id = (int) $booking->id;
+        $id = $booking->id;
 
         if ($id === 0) {
             $this->tableGateway->insert($data);
@@ -81,7 +81,8 @@ class BookingTable
      */
     public function deleteBooking($id)
     {
-        $affected = $this->tableGateway->delete(['id' => (int) $id]);
+        $affected = $this->tableGateway->delete(['id' => $id]);
+
         return $affected > 0 ? true : false;
     }
 }
